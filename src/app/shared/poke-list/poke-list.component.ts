@@ -8,7 +8,10 @@ import { PokeApiService } from 'src/app/service/poke-api.service';
 })
 export class PokeListComponent implements OnInit {
 
-  public getAllPokemons: any;
+  public setAllPokemons: any;
+  private getAllPokemons: any;
+
+  public apiError: boolean = false;
 
   constructor(
     private pokeApiService: PokeApiService
@@ -17,10 +20,20 @@ export class PokeListComponent implements OnInit {
   ngOnInit(): void {
     this.pokeApiService.apiListAllPokemons.subscribe( //get não precisa passar valor como param
       res => {
-        this.getAllPokemons = res.results;    //receber apenas valor de result do valor de res 
-    
+        this.setAllPokemons = res.results;                     //valor armazenado
+        this.getAllPokemons = res.setAllPokemons;    
+      },
+      error => {
+        this.apiError = true;
       }
     );  
+  }
+  public getSearch(value: string){
+    const filter = this.setAllPokemons.filter(( res: any ) => {          //filtro do valor arm
+      return !res.name.indexOf(value.toLowerCase());
+    });
+
+    this.getAllPokemons = filter;         //vai apagar ele mesmo e mantendo os valores dele digitado
 
   }
 
